@@ -42,12 +42,13 @@ app.get("/menu", (req, res) => {
 app.post("/order", (req, res) => {
 
     const order = {
-        id: nextOrderId++,
-        table: req.body.table,
-        items: req.body.items,
-        total: req.body.total,
-        status: "Preparing"
-    }
+    id: nextOrderId++,
+    table: req.body.table,
+    items: req.body.items,
+    total: req.body.total,
+    status: "Preparing",
+    time: new Date().toLocaleTimeString()
+}
 
     orders.push(order)
 
@@ -103,6 +104,8 @@ app.get("/admin", (req, res) => {
     res.sendFile(__dirname + "/public/admin.html")
 })
 
-app.listen(3000, "0.0.0.0", () => {
-    console.log("🚀 Server running on port 3000")
+const PORT = process.env.PORT || 3000
+
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`🚀 Server running on port ${PORT}`)
 })
