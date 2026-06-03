@@ -151,7 +151,7 @@ function loadOrders() {
                     <h3>Status: ${order.status}</h3>
 
                     <p>Order #${order.id}</p>
-<p>⏰ ${order.time}</p>
+<p>⏰ ${order.time || "NO TIME FOUND"}</p>
 
                     <ul>
                         ${order.items.map(item =>
