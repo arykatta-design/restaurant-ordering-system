@@ -47,7 +47,13 @@ app.post("/order", (req, res) => {
     items: req.body.items,
     total: req.body.total,
     status: "Preparing",
-    time: new Date().toLocaleTimeString()
+    time: new Date().toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: true
+})
 }
 
     orders.push(order)
