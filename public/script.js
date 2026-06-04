@@ -97,8 +97,7 @@ function decreaseQty(index) {
     renderCart()
 }
 
-function placeOrder() {
-    function checkStatus(){
+function checkStatus(){
 
     const params =
         new URLSearchParams(window.location.search)
@@ -109,6 +108,8 @@ function placeOrder() {
     window.location.href =
         "/status.html?table=" + tableNumber
 }
+
+function placeOrder() {
 
     if(cart.length === 0){
         alert("Cart is empty")
