@@ -98,6 +98,17 @@ function decreaseQty(index) {
 }
 
 function placeOrder() {
+    function checkStatus(){
+
+    const params =
+        new URLSearchParams(window.location.search)
+
+    const tableNumber =
+        params.get("table") || 1
+
+    window.location.href =
+        "/status.html?table=" + tableNumber
+}
 
     if(cart.length === 0){
         alert("Cart is empty")
