@@ -3,11 +3,45 @@
 <head>
     <title>Truffles Restaurant</title>
     <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        .top-bar{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:20px;
+        }
+
+        .status-btn{
+            background:#1976d2;
+            color:white;
+            border:none;
+            padding:12px 20px;
+            border-radius:8px;
+            cursor:pointer;
+            font-weight:bold;
+        }
+
+    </style>
+
 </head>
 
 <body>
 
-    <h1>🍴 Truffles Restaurant</h1>
+    <div class="top-bar">
+
+        <h1>🍴 Truffles Restaurant</h1>
+
+        <button
+            class="status-btn"
+            onclick="checkStatus()">
+
+            📋 Check Current Order Status
+
+        </button>
+
+    </div>
 
     <div id="menu"></div>
 
@@ -18,14 +52,8 @@
     <h3 id="total">Total: ₹0</h3>
 
     <button onclick="placeOrder()">
-    Place Order
-</button>
-
-<br><br>
-
-<button onclick="checkStatus()">
-    📋 Check Current Order
-</button>
+        Place Order
+    </button>
 
     <script src="script.js"></script>
 
