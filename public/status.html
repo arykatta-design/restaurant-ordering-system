@@ -9,14 +9,16 @@
             font-family:Arial;
             text-align:center;
             padding:50px;
+            background:#f5f5f5;
         }
 
         .card{
-            background:#f5f5f5;
+            background:white;
             padding:30px;
             border-radius:12px;
             margin:20px auto;
             max-width:500px;
+            box-shadow:0 2px 10px rgba(0,0,0,0.1);
         }
 
     </style>
@@ -27,6 +29,8 @@
 
 <h1>🍕 Order Status</h1>
 
+<h2 id="table"></h2>
+
 <div id="orders"></div>
 
 <script>
@@ -35,11 +39,24 @@ const params = new URLSearchParams(window.location.search)
 
 const table = params.get("table")
 
+document.getElementById("table").innerText =
+    "Table " + table
+
 function loadStatus(){
 
     fetch("/order-status/" + table)
     .then(res => res.json())
     .then(data => {
+
+        console.log(data)
+
+        if(data.length === 0){
+
+            document.getElementById("orders").innerHTML =
+                "<h2>No orders found for this table.</h2>"
+
+            return
+        }
 
         let html = ""
 
@@ -50,9 +67,17 @@ function loadStatus(){
 
                     <h2>Order #${order.id}</h2>
 
-                    <h3>${order.status}</h3>
+                    <h3>Status: ${order.status}</h3>
 
-                    <p>${order.time}</p>
+                    <p>⏰ ${order.time}</p>
+
+                    <ul>
+                        ${order.items.map(item =>
+                            `<li>${item.name} x${item.quantity}</li>`
+                        ).join("")}
+                    </ul>
+
+                    <h3>Total ₹${order.total}</h3>
 
                 </div>
             `

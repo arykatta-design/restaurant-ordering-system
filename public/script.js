@@ -130,8 +130,7 @@ function placeOrder() {
 
         alert("Order Placed!")
 
-        cart = []
-
-        renderCart()
+window.location.href =
+"/status.html?table=" + tableNumber
     })
 }
