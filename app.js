@@ -1,6 +1,16 @@
 const express = require("express")
+require("dotenv").config()
+const mongoose = require("mongoose")
 
 const app = express()
+
+mongoose.connect(process.env.MONGODB_URI)
+.then(() => {
+    console.log("✅ MongoDB Connected")
+})
+.catch((err) => {
+    console.log("❌ MongoDB Error:", err)
+})
 
 app.use(express.json())
 app.use(express.static("public"))
@@ -42,19 +52,19 @@ app.get("/menu", (req, res) => {
 app.post("/order", (req, res) => {
 
     const order = {
-    id: nextOrderId++,
-    table: req.body.table,
-    items: req.body.items,
-    total: req.body.total,
-    status: "Preparing",
-    time: new Date().toLocaleString("en-IN", {
-    timeZone: "Asia/Kolkata",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-    hour12: true
-})
-}
+        id: nextOrderId++,
+        table: req.body.table,
+        items: req.body.items,
+        total: req.body.total,
+        status: "Preparing",
+        time: new Date().toLocaleString("en-IN", {
+            timeZone: "Asia/Kolkata",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+            hour12: true
+        })
+    }
 
     orders.push(order)
 
@@ -114,6 +124,7 @@ app.get("/order-status/:table", (req, res) => {
 
     res.json(tableOrders)
 })
+
 app.get("/admin", (req, res) => {
     res.sendFile(__dirname + "/public/admin.html")
 })
