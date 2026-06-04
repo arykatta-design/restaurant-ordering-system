@@ -79,6 +79,10 @@
 
 <body>
 
+<audio id="ding">
+    <source src="ding.mp3" type="audio/mpeg">
+</audio>
+
 <h1>👨‍🍳 Kitchen Dashboard</h1>
 
 <h2 id="sales">Today's Sales: ₹0</h2>
@@ -86,6 +90,9 @@
 <div id="orders"></div>
 
 <script>
+
+let lastOrderCount = 0
+let firstLoad = true
 
 function updateStatus(id, status) {
 
@@ -123,6 +130,26 @@ function loadOrders() {
     .then(res => res.json())
     .then(data => {
 
+        if(firstLoad){
+
+            lastOrderCount = data.length
+
+            firstLoad = false
+        }
+        else{
+
+            if(data.length > lastOrderCount){
+
+                document
+                    .getElementById("ding")
+                    .play()
+                    .catch(() => {})
+
+            }
+
+            lastOrderCount = data.length
+        }
+
         let html = ""
 
         data.reverse()
@@ -151,7 +178,8 @@ function loadOrders() {
                     <h3>Status: ${order.status}</h3>
 
                     <p>Order #${order.id}</p>
-<p>⏰ ${order.time || "NO TIME FOUND"}</p>
+
+                    <p>⏰ ${order.time || "NO TIME FOUND"}</p>
 
                     <ul>
                         ${order.items.map(item =>
