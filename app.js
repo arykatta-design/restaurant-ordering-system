@@ -106,6 +106,14 @@ app.delete("/order/:id", (req, res) => {
     })
 })
 
+app.get("/order-status/:table", (req, res) => {
+
+    const tableOrders = orders.filter(
+        order => order.table == req.params.table
+    )
+
+    res.json(tableOrders)
+})
 app.get("/admin", (req, res) => {
     res.sendFile(__dirname + "/public/admin.html")
 })

@@ -1,0 +1,73 @@
+<html>
+
+<head>
+    <title>Order Status</title>
+
+    <style>
+
+        body{
+            font-family:Arial;
+            text-align:center;
+            padding:50px;
+        }
+
+        .card{
+            background:#f5f5f5;
+            padding:30px;
+            border-radius:12px;
+            margin:20px auto;
+            max-width:500px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<h1>🍕 Order Status</h1>
+
+<div id="orders"></div>
+
+<script>
+
+const params = new URLSearchParams(window.location.search)
+
+const table = params.get("table")
+
+function loadStatus(){
+
+    fetch("/order-status/" + table)
+    .then(res => res.json())
+    .then(data => {
+
+        let html = ""
+
+        data.forEach(order => {
+
+            html += `
+                <div class="card">
+
+                    <h2>Order #${order.id}</h2>
+
+                    <h3>${order.status}</h3>
+
+                    <p>${order.time}</p>
+
+                </div>
+            `
+        })
+
+        document.getElementById("orders").innerHTML = html
+    })
+}
+
+loadStatus()
+
+setInterval(loadStatus, 3000)
+
+</script>
+
+</body>
+
+</html>
