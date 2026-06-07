@@ -6,26 +6,42 @@ fetch("/menu")
 
     const menuDiv = document.getElementById("menu")
 
+    menuDiv.innerHTML = ""
+
     menu.forEach(item => {
 
         menuDiv.innerHTML += `
             <div class="card">
+
                 <img src="${item.image}" width="250">
+
                 <h2>${item.name}</h2>
+
                 <p>₹${item.price}</p>
 
-                <button onclick='addToCart(${JSON.stringify(item)})'>
-                    Add To Cart
-                </button>
+                ${
+                    item.available
+                    ?
+                    `<button onclick='addToCart(${JSON.stringify(item)})'>
+                        Add To Cart
+                    </button>`
+                    :
+                    `<button disabled
+                        style="background:red;color:white;cursor:not-allowed;">
+                        Out Of Stock
+                    </button>`
+                }
+
             </div>
         `
     })
+
 })
 
 function addToCart(item) {
 
     const existingItem = cart.find(
-        cartItem => cartItem.id === item.id
+        cartItem => cartItem._id === item._id
     )
 
     if(existingItem){

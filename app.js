@@ -1,6 +1,11 @@
 const express = require("express")
 require("dotenv").config()
 const mongoose = require("mongoose")
+const multer = require("multer")
+const path = require("path")
+
+const Order = require("./models/Order")
+const Menu = require("./models/Menu")
 
 const app = express()
 
@@ -14,8 +19,23 @@ mongoose.connect(process.env.MONGODB_URI)
 
 app.use(express.json())
 app.use(express.static("public"))
+app.use("/uploads", express.static("uploads"))
 
-const menu = [
+const storage = multer.diskStorage({
+    destination: "uploads/",
+    filename: (req, file, cb) => {
+        cb(
+            null,
+            Date.now() + path.extname(file.originalname)
+        )
+    }
+})
+
+const upload = multer({
+    storage
+})
+
+const defaultMenu = [
     {
         id: 1,
         name: "Margherita Pizza",
@@ -42,17 +62,105 @@ const menu = [
     }
 ]
 
-let orders = []
-let nextOrderId = 1
+app.get("/seed-menu", async (req, res) => {
 
-app.get("/menu", (req, res) => {
-    res.json(menu)
+    await Menu.deleteMany({})
+    await Menu.insertMany(defaultMenu)
+
+    res.json({
+        message: "Menu seeded successfully"
+    })
 })
 
-app.post("/order", (req, res) => {
+app.get("/menu", async (req, res) => {
 
-    const order = {
-        id: nextOrderId++,
+    const menuItems = await Menu.find()
+
+    res.json(menuItems)
+})
+
+app.post(
+    "/menu",
+    upload.single("image"),
+    async (req, res) => {
+
+        const item = new Menu({
+            name: req.body.name,
+            price: req.body.price,
+            image: "/uploads/" + req.file.filename
+        })
+
+        await item.save()
+
+        res.json({
+            message: "Menu item added"
+        })
+    }
+)
+
+app.put("/menu/:id", async (req, res) => {
+
+    await Menu.findByIdAndUpdate(
+        req.params.id,
+        {
+            name: req.body.name,
+            price: req.body.price,
+            image: req.body.image
+        }
+    )
+
+    res.json({
+        message: "Menu item updated"
+    })
+})
+
+app.delete("/menu/:id", async (req, res) => {
+
+    await Menu.findByIdAndDelete(req.params.id)
+
+    res.json({
+        message: "Menu item deleted"
+    })
+})
+
+app.post("/toggle-stock/:id", async (req, res) => {
+
+    const item = await Menu.findById(req.params.id)
+
+    item.available = !item.available
+
+    await item.save()
+
+    res.json({
+        message: "Stock updated"
+    })
+})
+
+app.get("/admin-menu", async (req, res) => {
+
+    console.log("🔥 ADMIN MENU ROUTE HIT")
+
+    try {
+
+        const menuItems = await Menu.find()
+
+        console.log("Found items:", menuItems.length)
+
+        res.json(menuItems)
+
+    } catch(err) {
+
+        console.log("ERROR:", err)
+
+        res.status(500).json({
+            error: err.message
+        })
+    }
+})
+
+app.post("/order", async (req, res) => {
+
+    const order = new Order({
         table: req.body.table,
         items: req.body.items,
         total: req.body.total,
@@ -64,65 +172,68 @@ app.post("/order", (req, res) => {
             second: "numeric",
             hour12: true
         })
-    }
+    })
 
-    orders.push(order)
+    await order.save()
 
     res.json({
         message: "Order received"
     })
 })
 
-app.get("/orders", (req, res) => {
+app.get("/orders", async (req, res) => {
+
+    const orders = await Order.find().sort({ _id: -1 })
+
     res.json(orders)
 })
 
-app.get("/sales", (req, res) => {
+app.get("/sales", async (req, res) => {
 
-    let totalSales = 0
+    const orders = await Order.find()
 
-    orders.forEach(order => {
-        totalSales += order.total
-    })
+    const totalSales = orders.reduce(
+        (sum, order) => sum + order.total,
+        0
+    )
 
     res.json({
         totalSales
     })
 })
 
-app.post("/status/:id", (req, res) => {
+app.post("/status/:id", async (req, res) => {
 
-    const order = orders.find(
-        o => o.id == req.params.id
+    await Order.findByIdAndUpdate(
+        req.params.id,
+        {
+            status: req.body.status
+        }
     )
-
-    if (order) {
-        order.status = req.body.status
-    }
 
     res.json({
         message: "Status updated"
     })
 })
 
-app.delete("/order/:id", (req, res) => {
+app.delete("/order/:id", async (req, res) => {
 
-    orders = orders.filter(
-        order => order.id != req.params.id
+    await Order.findByIdAndDelete(
+        req.params.id
     )
 
     res.json({
-        message: "Order cleared"
+        message: "Order deleted"
     })
 })
 
-app.get("/order-status/:table", (req, res) => {
+app.get("/order-status/:table", async (req, res) => {
 
-    const tableOrders = orders.filter(
-        order => order.table == req.params.table
-    )
+    const orders = await Order.find({
+        table: req.params.table
+    })
 
-    res.json(tableOrders)
+    res.json(orders)
 })
 
 app.get("/admin", (req, res) => {
@@ -130,7 +241,11 @@ app.get("/admin", (req, res) => {
 })
 
 const PORT = process.env.PORT || 3000
+app.get("/menu-manager", (req, res) => {
+    res.sendFile(__dirname + "/public/admin-menu.html")
+})
 
 app.listen(PORT, "0.0.0.0", () => {
+    console.log("🔥 THIS IS THE NEW APP.JS FILE")
     console.log(`🚀 Server running on port ${PORT}`)
 })

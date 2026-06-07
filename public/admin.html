@@ -177,7 +177,7 @@ function loadOrders() {
 
                     <h3>Status: ${order.status}</h3>
 
-                    <p>Order #${order.id}</p>
+                    <p>Order #${order._id}</p>
 
                     <p>⏰ ${order.time || "NO TIME FOUND"}</p>
 
@@ -191,25 +191,25 @@ function loadOrders() {
 
                     <button
                         class="prepare-btn"
-                        onclick="updateStatus(${order.id}, 'Preparing')">
+                        onclick="updateStatus(${order._id}, 'Preparing')">
                         Preparing
                     </button>
 
                     <button
                         class="ready-btn"
-                        onclick="updateStatus(${order.id}, 'Ready')">
+                        onclick="updateStatus(${order._id}, 'Ready')">
                         Ready
                     </button>
 
                     <button
                         class="deliver-btn"
-                        onclick="updateStatus(${order.id}, 'Delivered')">
+                        onclick="updateStatus(${order._id}, 'Delivered')">
                         Delivered
                     </button>
 
                     <button
                         class="clear-btn"
-                        onclick="clearOrder(${order.id})">
+                        onclick="clearOrder(${order._id})">
                         🗑 Clear Order
                     </button>
 
