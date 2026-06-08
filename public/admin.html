@@ -133,10 +133,9 @@ function loadOrders() {
         if(firstLoad){
 
             lastOrderCount = data.length
-
             firstLoad = false
-        }
-        else{
+
+        } else {
 
             if(data.length > lastOrderCount){
 
@@ -191,25 +190,25 @@ function loadOrders() {
 
                     <button
                         class="prepare-btn"
-                        onclick="updateStatus(${order._id}, 'Preparing')">
+                        onclick="updateStatus('${order._id}', 'Preparing')">
                         Preparing
                     </button>
 
                     <button
                         class="ready-btn"
-                        onclick="updateStatus(${order._id}, 'Ready')">
+                        onclick="updateStatus('${order._id}', 'Ready')">
                         Ready
                     </button>
 
                     <button
                         class="deliver-btn"
-                        onclick="updateStatus(${order._id}, 'Delivered')">
+                        onclick="updateStatus('${order._id}', 'Delivered')">
                         Delivered
                     </button>
 
                     <button
                         class="clear-btn"
-                        onclick="clearOrder(${order._id})">
+                        onclick="clearOrder('${order._id}')">
                         🗑 Clear Order
                     </button>
 
