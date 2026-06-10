@@ -23,7 +23,7 @@ fetch("/menu")
                     item.available
                     ?
                     `<button onclick='addToCart(${JSON.stringify(item)})'>
-                        Add To Cart
+                        🛒 Add To Cart
                     </button>`
                     :
                     `<button disabled
@@ -91,8 +91,14 @@ function renderCart() {
         `
     })
 
-    document.getElementById("total").innerText =
-        `Total: ₹${total}`
+   const totalItems =
+    cart.reduce(
+        (sum,item)=>sum+item.quantity,
+        0
+    )
+
+document.getElementById("floating-cart").innerText =
+    `🛒 Cart (${totalItems}) • ₹${total}`
 }
 
 function increaseQty(index) {

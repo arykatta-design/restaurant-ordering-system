@@ -1,58 +1,99 @@
 <html>
 
 <head>
-    <title>Order Status</title>
 
-    <style>
+<title>Order Status</title>
 
-        body{
-            font-family:Arial;
-            text-align:center;
-            padding:50px;
-            background:#f5f5f5;
-        }
+<style>
 
-        .card{
-            background:white;
-            padding:30px;
-            border-radius:12px;
-            margin:20px auto;
-            max-width:500px;
-            box-shadow:0 2px 10px rgba(0,0,0,0.1);
-        }
+body{
+    font-family:Arial,sans-serif;
+    background:#f5f5f5;
+    padding:20px;
+}
 
-        button{
-            padding:12px 24px;
-            border:none;
-            border-radius:8px;
-            background:green;
-            color:white;
-            font-size:16px;
-            cursor:pointer;
-            margin-top:20px;
-        }
+.header{
+    text-align:center;
+    margin-bottom:30px;
+}
 
-    </style>
+.card{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    margin-bottom:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+
+.badge{
+    display:inline-block;
+    padding:8px 16px;
+    border-radius:20px;
+    color:white;
+    font-weight:bold;
+}
+
+.preparing{
+    background:orange;
+}
+
+.ready{
+    background:green;
+}
+
+.delivered{
+    background:#1976d2;
+}
+
+ul{
+    margin-top:15px;
+    padding-left:20px;
+}
+
+li{
+    margin-bottom:8px;
+}
+
+button{
+    width:100%;
+    background:#16a34a;
+    color:white;
+    border:none;
+    padding:15px;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:20px;
+}
+
+</style>
 
 </head>
 
 <body>
 
-<h1>🍕 Order Status</h1>
+<div class="header">
+
+<h1>🍽 Order Status</h1>
 
 <h2 id="table"></h2>
+
+</div>
 
 <div id="orders"></div>
 
 <button onclick="goToMenu()">
-    🍽 Order More Food
+🍴 Order More Food
 </button>
 
 <script>
 
-const params = new URLSearchParams(window.location.search)
+const params =
+    new URLSearchParams(window.location.search)
 
-const table = params.get("table")
+const table =
+    params.get("table")
 
 document.getElementById("table").innerText =
     "Table " + table
@@ -66,37 +107,68 @@ function loadStatus(){
         if(data.length === 0){
 
             document.getElementById("orders").innerHTML =
-                "<h2>No orders found for this table.</h2>"
+                "<h2>No active orders.</h2>"
 
             return
         }
 
         let html = ""
 
+        data.reverse()
+
         data.forEach(order => {
 
+            let badgeClass = "preparing"
+
+            if(order.status === "Ready"){
+                badgeClass = "ready"
+            }
+
+            if(order.status === "Delivered"){
+                badgeClass = "delivered"
+            }
+
             html += `
+
                 <div class="card">
 
                     <h2>Order #${order._id}</h2>
 
-                    <h3>Status: ${order.status}</h3>
+                    <br>
 
-                    <p>⏰ ${order.time}</p>
+                    <span class="badge ${badgeClass}">
+                        ${order.status}
+                    </span>
+
+                    <p style="margin-top:15px;">
+                        ⏰ ${order.time}
+                    </p>
 
                     <ul>
+
                         ${order.items.map(item =>
-                            `<li>${item.name} x${item.quantity}</li>`
+
+                            `<li>
+                                ${item.name}
+                                x${item.quantity}
+                            </li>`
+
                         ).join("")}
+
                     </ul>
 
-                    <h3>Total ₹${order.total}</h3>
+                    <h3>
+                        Total ₹${order.total}
+                    </h3>
 
                 </div>
+
             `
         })
 
-        document.getElementById("orders").innerHTML = html
+        document.getElementById("orders").innerHTML =
+            html
+
     })
 }
 
@@ -108,7 +180,7 @@ function goToMenu(){
 
 loadStatus()
 
-setInterval(loadStatus, 3000)
+setInterval(loadStatus,3000)
 
 </script>
 
