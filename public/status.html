@@ -148,12 +148,23 @@ function loadStatus(){
 
                         ${order.items.map(item =>
 
-                            `<li>
-                                ${item.name}
-                                x${item.quantity}
-                            </li>`
+    `<li>
 
-                        ).join("")}
+        ${item.name} x${item.quantity}
+
+        ${
+            item.note
+            ?
+            `<br><small>📝 ${item.note}</small>`
+            :
+            ""
+        }
+
+    </li>`
+
+).join("")
+
+}
 
                     </ul>
 

@@ -182,8 +182,22 @@ function loadOrders() {
 
                     <ul>
                         ${order.items.map(item =>
-                            `<li>${item.name} x${item.quantity}</li>`
-                        ).join("")}
+
+    `<li>
+
+        ${item.name} x${item.quantity}
+
+        ${
+            item.note
+            ?
+            `<br><small>📝 ${item.note}</small>`
+            :
+            ""
+        }
+
+    </li>`
+
+).join("")}
                     </ul>
 
                     <h3>Total ₹${order.total}</h3>

@@ -40,17 +40,30 @@ fetch("/menu")
 
 function addToCart(item) {
 
+    let note = prompt(
+        "Special Instructions?\n\nExamples:\n• Extra Cheese\n• No Onion\n• Less Spicy"
+    )
+
+    if(note === null){
+        note = ""
+    }
+
     const existingItem = cart.find(
-        cartItem => cartItem._id === item._id
+        cartItem =>
+            cartItem._id === item._id &&
+            cartItem.note === note
     )
 
     if(existingItem){
+
         existingItem.quantity++
-    }
-    else{
+
+    }else{
+
         cart.push({
             ...item,
-            quantity: 1
+            quantity: 1,
+            note: note
         })
     }
 
@@ -73,22 +86,36 @@ function renderCart() {
         total += itemTotal
 
         cartDiv.innerHTML += `
-            <p>
 
-                ${item.name}
-                x${item.quantity}
-                - ₹${itemTotal}
+<div class="cart-item">
 
-                <button onclick="decreaseQty(${index})">
-                    -
-                </button>
+    <p>
 
-                <button onclick="increaseQty(${index})">
-                    +
-                </button>
+        ${item.name}
+        x${item.quantity}
+        - ₹${itemTotal}
 
-            </p>
-        `
+        <button onclick="decreaseQty(${index})">
+            -
+        </button>
+
+        <button onclick="increaseQty(${index})">
+            +
+        </button>
+
+    </p>
+
+    ${
+        item.note
+        ?
+        `<small>📝 ${item.note}</small>`
+        :
+        ""
+    }
+
+</div>
+
+`
     })
 
    const totalItems =
