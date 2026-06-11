@@ -87,45 +87,53 @@ function renderCart() {
 
         cartDiv.innerHTML += `
 
-<div class="cart-item">
+        <div class="cart-item">
 
-    <p>
+            <p>
+                <strong>${item.name}</strong>
+                - ₹${itemTotal}
+            </p>
 
-        ${item.name}
-        x${item.quantity}
-        - ₹${itemTotal}
+            <div class="qty-controls">
 
-        <button onclick="decreaseQty(${index})">
-            -
-        </button>
+                <button onclick="decreaseQty(${index})">
+                    -
+                </button>
 
-        <button onclick="increaseQty(${index})">
-            +
-        </button>
+                <span class="qty-number">
+                    ${item.quantity}
+                </span>
 
-    </p>
+                <button onclick="increaseQty(${index})">
+                    +
+                </button>
 
-    ${
-        item.note
-        ?
-        `<small>📝 ${item.note}</small>`
-        :
-        ""
-    }
+            </div>
 
-</div>
+            ${
+                item.note
+                ?
+                `<small>📝 ${item.note}</small>`
+                :
+                ""
+            }
 
-`
+        </div>
+
+        `
     })
 
-   const totalItems =
-    cart.reduce(
-        (sum,item)=>sum+item.quantity,
-        0
-    )
+    document.getElementById("total").innerText =
+        `Total: ₹${total}`
 
-document.getElementById("floating-cart").innerText =
-    `🛒 Cart (${totalItems}) • ₹${total}`
+    const totalItems =
+        cart.reduce(
+            (sum,item)=>sum+item.quantity,
+            0
+        )
+
+    document.getElementById("floating-cart").innerText =
+        `🛒 Cart (${totalItems}) • ₹${total}`
 }
 
 function increaseQty(index) {
@@ -199,4 +207,12 @@ function placeOrder() {
         window.location.href =
             "/status.html?table=" + tableNumber
     })
+}
+
+function toggleCart(){
+
+    const drawer =
+        document.getElementById("cartDrawer")
+
+    drawer.classList.toggle("open")
 }

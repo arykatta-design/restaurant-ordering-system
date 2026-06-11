@@ -30,6 +30,25 @@
 <body>
 
     <div class="top-bar">
+        <div id="categories">
+
+    <button onclick="filterCategory('all')">
+        All
+    </button>
+
+    <button onclick="filterCategory('Pizza')">
+        Pizza
+    </button>
+
+    <button onclick="filterCategory('Burger')">
+        Burgers
+    </button>
+
+    <button onclick="filterCategory('Drink')">
+        Drinks
+    </button>
+
+</div>
 
         <div>
     <h1>🍴 Truffles Restaurant</h1>
@@ -52,9 +71,21 @@
 
     <h2>🛒 Your Order</h2>
 
+    <div id="cartDrawer" class="cart-drawer">
+
+    <div class="drawer-header">
+        <h2>🛒 Your Order</h2>
+
+        <button onclick="toggleCart()">
+            ✖
+        </button>
+    </div>
+
     <div id="cart"></div>
 
-    <h3 id="total">Total: ₹0</h3>
+    <h3 id="total">
+        Total: ₹0
+    </h3>
 
     <button onclick="placeOrder()">
         Place Order
@@ -62,7 +93,11 @@
 
 </div>
 
-<div id="floating-cart">
+</div>
+
+<button
+    id="floating-cart"
+    onclick="toggleCart()">
     🛒 Cart (0) • ₹0
 </div>
 
