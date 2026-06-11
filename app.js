@@ -3,6 +3,11 @@ require("dotenv").config()
 const mongoose = require("mongoose")
 const multer = require("multer")
 const path = require("path")
+const { CloudinaryStorage } =
+    require("multer-storage-cloudinary")
+
+const cloudinary =
+    require("cloudinary").v2
 
 const Order = require("./models/Order")
 const Menu = require("./models/Menu")
@@ -19,21 +24,41 @@ mongoose.connect(process.env.MONGODB_URI)
 
 app.use(express.json())
 app.use(express.static("public"))
-app.use("/uploads", express.static("uploads"))
 
-const storage = multer.diskStorage({
-    destination: "uploads/",
-    filename: (req, file, cb) => {
-        cb(
-            null,
-            Date.now() + path.extname(file.originalname)
-        )
-    }
+cloudinary.config({
+    cloud_name:
+        process.env.CLOUDINARY_CLOUD_NAME,
+
+    api_key:
+        process.env.CLOUDINARY_API_KEY,
+
+    api_secret:
+        process.env.CLOUDINARY_API_SECRET
 })
+
+const storage =
+    new CloudinaryStorage({
+
+        cloudinary,
+
+        params: {
+
+            folder:
+                "restaurant-menu",
+
+            allowed_formats: [
+                "jpg",
+                "jpeg",
+                "png",
+                "webp"
+            ]
+        }
+    })
 
 const upload = multer({
     storage
 })
+
 
 const defaultMenu = [
     {
@@ -87,7 +112,7 @@ app.post(
         const item = new Menu({
             name: req.body.name,
             price: req.body.price,
-            image: "/uploads/" + req.file.filename
+            image: req.file.path
         })
 
         await item.save()
